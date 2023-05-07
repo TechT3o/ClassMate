@@ -4,6 +4,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from typing import Tuple
 from statics import save_dict_to_json
+from tqdm import tqdm
 
 
 class CourseScrapper:
@@ -37,7 +38,6 @@ class CourseScrapper:
         class_div = soup.find('div', {'id': 'search-results'})
 
         a_tags = class_div.find_all('a')
-
         for a_tag in a_tags:
             div = a_tag.find('span', {'class': 'result-item-title'})
             course_name = div.text.strip()
@@ -52,11 +52,13 @@ class CourseScrapper:
         Iterates through every page and adds the courses and their links to course_dict
         :return: None
         """
-        for page in range(1, self.max_page_number):
+        for page in tqdm(range(1, self.max_page_number+1)):
             next_button = self.driver.find_element(By.ID, f'pagination-page-{page}')
             self.driver.execute_script("arguments[0].click();", next_button)
-            sleep(5)
+            sleep(6)
             self._find_class_and_link()
+        print(len(self.course_dict))
+        print(self.course_dict)
 
     def _extract_course_data(self) -> Tuple[str, str, str, str, str]:
         """
@@ -84,14 +86,14 @@ class CourseScrapper:
         course_url = self.course_dict[course]['href']
         print(course_url)
         self.driver.get(course_url)
-        sleep(3)
+        sleep(4)
 
     def get_course_info(self) -> None:
         """
         Iterates through every course and adds the extra details
         :return: None
         """
-        for course in list(self.course_dict.keys())[:1]:
+        for course in tqdm(list(self.course_dict.keys())):
             self._open_course_info(course)
             description, college, department, subject_area, units = self._extract_course_data()
             self.course_dict[course]['Description'] = description
@@ -108,7 +110,7 @@ class CourseScrapper:
         self.get_all_courses()
         self.get_course_info()
         self._quit_driver()
-        save_dict_to_json(self.course_dict, 'coruse_data.json')
+        save_dict_to_json(self.course_dict, 'course_data.json')
 
     def _quit_driver(self) -> None:
         """
