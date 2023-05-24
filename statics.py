@@ -10,3 +10,9 @@ def save_dict_to_json(data, filename):
     """
     with open(filename, 'w') as outfile:
         json.dump(data, outfile)
+
+
+def load_dict_from_json(filename):
+    with open(filename) as json_file:
+        data = json.load(json_file)
+        return data

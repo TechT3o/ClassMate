@@ -8,6 +8,9 @@ class FilteringWindow(QWidget):
     def __init__(self):
         super(FilteringWindow, self).__init__()
 
+        self.setWindowTitle("Filter")
+        self.setStyleSheet("background-color: darkcyan;")
+
         layout_main = QVBoxLayout()
 
         welcome_text = QLabel('Welcome to ClassMate')
@@ -74,12 +77,12 @@ class FilteringWindow(QWidget):
         layout_main.addLayout(form_layout)
 
         self.submit_button = QPushButton("Submit")
-        self.submit_button.clicked.connect(self.on_submit_button_clicked)
 
         layout_main.addWidget(self.submit_button)
         self.setLayout(layout_main)
 
     def on_submit_button_clicked(self):
+        print('submitted')
         # Get the values of the widgets and process them
         fall_checked = self.box_fall.isChecked()
         winter_checked = self.box_winter.isChecked()
