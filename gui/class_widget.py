@@ -43,11 +43,13 @@ class ClassBox(QWidget):
         self.lbl = self.name_label()
         self.lbl.clicked.connect(self.onLabelClicked)
         self.btn = self.button()
-        self.match_percent()
+        self.match_lbl = self.match_percent()
         layout.addWidget(self.lbl)
         self.setLayout(layout)
 
         self.generate_random_schedule()
+
+        self.score = 0
 
     def name_label(self) -> QPushButton:
         """
@@ -103,13 +105,13 @@ class ClassBox(QWidget):
 
         return button
 
-    def match_percent(self, percentage: int = 0) -> None:
+    def match_percent(self) -> QLabel:
         """
         Label that displays how closely a course option matches the user
         :param percentage: match percentage
         :return: None
         """
-        label = QLabel(f'{percentage}% match', self.lbl)
+        label = QLabel(f'{self.score} scoring points', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
                                         border: 1px solid black''')
         font = label.font()
@@ -120,6 +122,8 @@ class ClassBox(QWidget):
         percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right()//4, self.lbl.geometry().bottom()//2 - label.geometry().bottom())
         label.move(percentage_lbl_pos_x)
         label.setVisible(self.ai_toggle)
+
+        return label
 
     def generate_random_schedule(self) -> None:
         """
@@ -157,6 +161,10 @@ class ClassBox(QWidget):
             self.btn.setIcon(QtGui.QIcon('plus-circle.png'))
         else:
             self.btn.setIcon(QtGui.QIcon('minus-circle.png'))
+    
+    def set_percentage(self, score: int):
+        self.score = score
+        self.match_lbl.setText(f'{self.score} scoring points')
 
     def onLabelClicked(self) -> None:
         """
