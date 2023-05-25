@@ -8,6 +8,7 @@ from PyQt5 import QtCore
 import sys
 from statics import load_dict_from_json
 import os
+from text_filter import TextFilter
 
 
 class MainWindow(QMainWindow):
@@ -32,6 +33,8 @@ class MainWindow(QMainWindow):
         self.recommendations_widget = QTableWidget(3, 1 + len(self.course_dict) // 3)
 
         self.create_menu()
+
+        self.text_filter = TextFilter()
 
     def load_course_dict(self) -> None:
         """
@@ -73,14 +76,20 @@ class MainWindow(QMainWindow):
             if constraint_based_filter.filter_course(class_box_widget.class_details):
                 class_box_widget.buttonClicked.connect(self.onClassButtonClicked)
                 class_widgets.append(class_box_widget)
+        
+        # Text Filtering
+        text_filtered_widgets = []
+        for filtered_class in class_widgets:
+            if self.text_filter.rank_classes(filtered_class):
+                text_filtered_widgets.append(filtered_class)
 
         # Place class widgets in recommendation table
         for col in range(self.recommendations_widget.columnCount()):
             for row in range(self.recommendations_widget.rowCount()):
-                if i >= len(class_widgets):
+                if i >= len(text_filtered_widgets):
                     break
                 table_item = QTableWidgetItem()
-                self.recommendations_widget.setCellWidget(row, col, class_widgets[i])
+                self.recommendations_widget.setCellWidget(row, col, text_filtered_widgets[i])
                 self.recommendations_widget.setItem(row, col, table_item)
                 self.recommendations_widget.setColumnWidth(col, 300)
                 self.recommendations_widget.setRowHeight(row, 150)
