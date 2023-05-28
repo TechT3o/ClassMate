@@ -4,9 +4,15 @@ from statics import interpret_days
 
 class ConstraintBasedFilter:
 
-    def __init__(self, constraints):
+    def __init__(self):
         self.dict = {}
-        self.school_area, self.units_lower, self.units_upper, self.max_hours = constraints
+        self.school_area = ''
+        self.units_lower = 0
+        self.units_upper = 0
+        self.max_hours = 0
+
+    def update_constraints(self, new_constraints):
+        self.school_area, self.units_lower, self.units_upper, self.max_hours = new_constraints
 
     def filter_course(self, course_details):
         subject_area = course_details['Subject area']

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QLabel, QPushButton, QSpinBox, QWidget, QVBoxLayout, QHBoxLayout,\
-    QFormLayout, QCheckBox, QComboBox, QApplication
+    QFormLayout, QCheckBox, QComboBox, QApplication, QLineEdit
 from PyQt5.QtCore import *
 from enums import SubjectArea
 from typing import Tuple

@@ -24,6 +24,7 @@ class ClassBox(QWidget):
     depending on use and a label to indicate match percentage
     """
     buttonClicked = QtCore.pyqtSignal(QWidget)
+    classClicked = QtCore.pyqtSignal(QWidget)
 
     def __init__(self, class_name: str, class_details: dict, parent: QMainWindow = None):
         super(ClassBox, self).__init__()
@@ -33,6 +34,7 @@ class ClassBox(QWidget):
         self.course_name = class_name
         self.plus = True
         self.ai_toggle = True
+        self.score = 0
 
         # Generates random background color
         self.rgb_color = (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255))
@@ -42,14 +44,13 @@ class ClassBox(QWidget):
         layout = QVBoxLayout()
         self.lbl = self.name_label()
         self.lbl.clicked.connect(self.onLabelClicked)
+
         self.btn = self.button()
         self.match_lbl = self.match_percent()
         layout.addWidget(self.lbl)
         self.setLayout(layout)
 
         self.generate_random_schedule()
-
-        self.score = 0
 
     def name_label(self) -> QPushButton:
         """
@@ -111,7 +112,7 @@ class ClassBox(QWidget):
         :param percentage: match percentage
         :return: None
         """
-        label = QLabel(f'{self.score} scoring points', self.lbl)
+        label = QLabel(f'score: {self.score}', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
                                         border: 1px solid black''')
         font = label.font()
@@ -164,17 +165,19 @@ class ClassBox(QWidget):
     
     def set_percentage(self, score: int):
         self.score = score
-        self.match_lbl.setText(f'{self.score} scoring points')
+        self.match_lbl.setText(f'score: {self.score}')
 
     def onLabelClicked(self) -> None:
         """
         Opens the hyperlink of the class website on click on the label of the course
         :return: None
         """
-        chr_options = Options()
-        chr_options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(options=chr_options)
-        driver.get(self.class_details['href'])
+        # chr_options = Options()
+        # chr_options.add_experimental_option("detach", True)
+        # driver = webdriver.Chrome(options=chr_options)
+        # driver.get(self.class_details['href'])
+
+        self.classClicked.emit(self)
 
     @property
     def color(self):
