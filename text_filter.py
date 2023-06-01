@@ -37,3 +37,7 @@ class TextFilter:
                 score += 1
 
         return score
+    
+
+    
+

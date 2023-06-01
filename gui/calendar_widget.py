@@ -1,4 +1,7 @@
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
+import sys
+import os
+sys.path.append(os.pardir)
 from statics import interpret_days
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QMainWindow

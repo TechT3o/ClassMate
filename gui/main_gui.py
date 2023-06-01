@@ -1,5 +1,5 @@
 from class_widget import ClassBox
-from constraint_filtering import ConstraintBasedFilter
+
 from calendar_widget import CalendarWidget
 from start_window import StartWindow
 from PyQt5.QtWidgets import *
@@ -7,11 +7,13 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 import sys
-from statics import load_dict_from_json
 import os
 from text_filter import TextFilter
 from PyQt5.QtCore import Qt
 
+
+from constraint_filtering import ConstraintBasedFilter
+from statics import load_dict_from_json
 
 class MainWindow(QMainWindow):
     """
