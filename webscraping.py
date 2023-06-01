@@ -1,3 +1,8 @@
+"""
+By running this script the class details for all the electrical and computer engineering course
+ are scrapped from the web
+"""
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from time import sleep

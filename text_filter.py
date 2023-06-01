@@ -1,36 +1,39 @@
 import yake
-from heapq import nlargest
-from gui.class_widget import ClassBox
 
 
 class TextFilter:
-
+    """
+    Class that filters/ ranks the classes based on text input
+    """
     def __init__(self):
         self.kw_extractor = yake.KeywordExtractor()
         self.keywords = []
-
         self.scores = []
         
-    def extract_keywords(self, doc):
-        self.keywords = self.kw_extractor.extract_keywords(doc)
+    def extract_keywords(self, user_prompt: str) -> None:
+        """
+        Extract key_words from the input of the user
+        :param user_prompt: input that user put in AI-user chat
+        :return: None
+        """
+        self.keywords = self.kw_extractor.extract_keywords(user_prompt)
     
-    def rank_classes(self, course: ClassBox):
-
-        details = course.class_details
+    def rank_classes(self, class_details: dict) -> int:
+        """
+        Generates new class score based on the class details
+        :param class_details: dictionary result from web scrapping script
+        :return: score of how much user's prompt matches ot the course
+        """
+        details = class_details
         score = 0
         description = details['Description']
         units = details['Units']
         full_text = description + " " + units
 
         for word in self.keywords:
-            keyWord = word[0]
+            key_word = word[0]
             
-            if keyWord in full_text:
+            if key_word in full_text:
                 score += 1
 
-        if score > 0:
-            course.set_percentage(score)
-
-            return True
-        else:
-            return False
+        return score

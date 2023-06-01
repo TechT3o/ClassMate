@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QLabel, QPushButton, QSpinBox, QWidget, QVBoxLayout, QHBoxLayout,\
-    QFormLayout, QCheckBox, QComboBox, QApplication, QLineEdit
-from PyQt5.QtCore import *
+    QFormLayout, QCheckBox, QComboBox, QApplication
+from PyQt5.QtCore import Qt
 from enums import SubjectArea
 from typing import Tuple
 
@@ -97,9 +97,6 @@ class FilteringWindow(QWidget):
         # Link submit button to submit method
         self.submit_button = QPushButton("Submit")
         layout_main.addWidget(self.submit_button)
-
-        # self.skip_filtering_btn = QPushButton("Skip Filtering")
-        # layout_main.addWidget(self.skip_filtering_btn)
 
         self.setLayout(layout_main)
 

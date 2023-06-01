@@ -1,9 +1,6 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QMainWindow, QVBoxLayout, QSizePolicy, QApplication
 from PyQt5.QtCore import Qt
-import random as rng
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
 
 class Color(QWidget):
@@ -32,12 +29,12 @@ class ClassBox(QWidget):
         self.setParent(parent)
         self.class_details = class_details
         self.course_name = class_name
+
+        self.rgb_color = self.class_details['Color']
+
         self.plus = True
         self.ai_toggle = True
         self.score = 0
-
-        # Generates random background color
-        self.rgb_color = (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255))
 
         # Creates widget layout
         # self.setFixedSize(200, 100)
@@ -49,8 +46,6 @@ class ClassBox(QWidget):
         self.match_lbl = self.match_percent()
         layout.addWidget(self.lbl)
         self.setLayout(layout)
-
-        self.generate_random_schedule()
 
     def name_label(self) -> QPushButton:
         """
@@ -109,8 +104,7 @@ class ClassBox(QWidget):
     def match_percent(self) -> QLabel:
         """
         Label that displays how closely a course option matches the user
-        :param percentage: match percentage
-        :return: None
+        :return: label containing score
         """
         label = QLabel(f'score: {self.score}', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
@@ -120,30 +114,13 @@ class ClassBox(QWidget):
         label.resize(50, 20)
         label.setFont(font)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right()//4, self.lbl.geometry().bottom()//2 - label.geometry().bottom())
+        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right()//4,
+                                                                            self.lbl.geometry().bottom()//2
+                                                                            - label.geometry().bottom())
         label.move(percentage_lbl_pos_x)
         label.setVisible(self.ai_toggle)
 
         return label
-
-    def generate_random_schedule(self) -> None:
-        """
-        Generates a random time schedule for the class
-        :return: None
-        """
-
-        # possible lecture days
-        days = ["MW", "TT", "WF", "Mo", "Tu", "We", "Th", "Fr"]
-
-        # selects random, hours, duration and days
-        hours = list(range(1, 8))
-        duration = rng.randint(1, 3)
-        start_hour = rng.choice(hours)
-        day = rng.choice(days)
-        finish_hour = start_hour + duration
-
-        # add it in class details
-        self.class_details['Schedule'] = (day, start_hour, finish_hour)
 
     def onButtonClicked(self) -> None:
         """
@@ -163,7 +140,12 @@ class ClassBox(QWidget):
         else:
             self.btn.setIcon(QtGui.QIcon('minus-circle.png'))
     
-    def set_percentage(self, score: int):
+    def set_score(self, score: int) -> None:
+        """
+        Sets new score to the label of the widget
+        :param score: new score
+        :return: None
+        """
         self.score = score
         self.match_lbl.setText(f'score: {self.score}')
 
@@ -190,6 +172,6 @@ class ClassBox(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
-    volume = ClassBox('peaki o roubis o koumpis o roumpokompologis', {})
+    volume = ClassBox('GG', {})
     volume.show()
     app.exec_()

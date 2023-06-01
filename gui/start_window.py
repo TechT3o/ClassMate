@@ -37,16 +37,15 @@ class StartWindow(QWidget):
 
         # pic.setScaledContents(True)
         layout.addLayout(layout_v)
-        layout.addWidget(pic)
+        layout.addWidget(pic, alignment=Qt.AlignHCenter)
 
         self.setLayout(layout)
         self.show()
         self.showFullScreen()
 
-    def toggle_filter_window(self, checked) -> None:
+    def toggle_filter_window(self) -> None:
         """
-        toggles filtering window if it is not visible
-        :param checked: whether button is checked or not
+        Toggles filtering window if it is not visible
         :return: None
         """
         if self.filter_window.isVisible():
