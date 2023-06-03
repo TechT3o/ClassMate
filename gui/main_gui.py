@@ -200,7 +200,7 @@ class MainWindow(QMainWindow):
         self.top_layout.removeWidget(self.recommendations_widget)
         self.recommendations_widget.deleteLater()
         self.recommendations_widget = QTableWidget(3, 50)
-        self.top_layout.insertWidget(0, self.recommendations_widget, alignment=Qt.AlignHCenter)
+        self.top_layout.insertWidget(0, self.recommendations_widget)# , alignment=Qt.AlignHCenter)
         self.fill_recommended_classes()
 
     def constraint_filter_courses(self) -> None:
@@ -215,17 +215,16 @@ class MainWindow(QMainWindow):
 
     def text_filter_courses(self, text_prompt: str) -> None:
         """
-        Filters the courses based on teh text prompt of the user
+        Filters the courses based on the text prompt of the user
         :param text_prompt: prompt inserted in AI-user chat
         :return: None
         """
-        self.text_filter.extract_keywords(text_prompt)
 
         # Text Filtering if prompt inserted
         if text_prompt != '' and text_prompt != 'Enter your prompt here:':
+            self.text_filter.generate_scores(text_prompt)
             for score, class_index in self.displayed_class_index:
-                score = self.text_filter.rank_classes(self.course_dict[self.class_names[class_index]])
-                self.displayed_class_index[class_index][0] = score
+                self.displayed_class_index[class_index][0] = self.text_filter.scores[class_index]
 
     def fill_recommended_classes(self) -> None:
         """
