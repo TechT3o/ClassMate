@@ -180,6 +180,16 @@ class MainWindow(QMainWindow):
         quit_action.setShortcut(QKeySequence.Quit)
         quit_action.triggered.connect(QApplication.quit)
 
+        # Help text
+        """
+        In the upper left corner, a display of the classes that best fit you depending on the filters used or your input in the text prompt. For each class, the + button allows you to add the class in the plan in the calendar in the bottom right corner. Similarly, once the class is added, the - button allows you to remove it. Clicking on the class name opens the class details in the top right corner.
+
+        In the bottom left corner, the calendar with the added classes is displayed.
+
+        In the bottom right corner, a text prompt allows you to input your preferences as a text input and our AI agent will find the classes that best suit you based on your preferences. 
+        
+        """
+
         # Add the "Quit" action to the "File" menu
         file_menu.addAction(quit_action)
 
