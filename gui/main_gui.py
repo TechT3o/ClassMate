@@ -1,5 +1,4 @@
 from class_widget import ClassBox
-
 from calendar_widget import CalendarWidget
 from start_window import StartWindow
 from PyQt5.QtWidgets import *
