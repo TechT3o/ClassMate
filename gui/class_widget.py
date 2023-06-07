@@ -106,7 +106,7 @@ class ClassBox(QWidget):
         Label that displays how closely a course option matches the user
         :return: label containing score
         """
-        label = QLabel(f'score: {self.score}', self.lbl)
+        label = QLabel(f'score: {self.score:.{3}f}', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
                                         border: 1px solid black''')
         font = label.font()
@@ -147,7 +147,7 @@ class ClassBox(QWidget):
         :return: None
         """
         self.score = score
-        self.match_lbl.setText(f'score: {self.score}')
+        self.match_lbl.setText(f'score: {self.score:.{3}f}')
 
     def onLabelClicked(self) -> None:
         """
