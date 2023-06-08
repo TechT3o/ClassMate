@@ -101,6 +101,7 @@ class FilteringWindow(QWidget):
 
         # Link submit button to submit method
         self.submit_button = QPushButton("Submit")
+        self.submit_button.setStyleSheet("background-color: whitesmoke;")
         layout_main.addWidget(self.submit_button)
 
         self.setLayout(layout_main)
