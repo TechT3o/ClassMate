@@ -7,8 +7,8 @@ class SubjectArea(enum.Enum):
     """
     ANY = ''
     ECE = "Electrical and Computer Engineering"
-    CS = "computer science"
-    MATH = "mathematics"
+    CS = "Computer Science"
+    MATH = "Mathematics"
 
 
 class College(enum.Enum):

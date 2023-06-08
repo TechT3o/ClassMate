@@ -58,24 +58,24 @@ class FilteringWindow(QWidget):
         units_layout.addWidget(self.maximum_val)
 
         # Term selection
-        term_layout = QHBoxLayout()
-        self.box_fall = QCheckBox('Fall')
-        term_layout.addWidget(self.box_fall)
-        self.box_winter = QCheckBox('Winter')
-        term_layout.addWidget(self.box_winter)
-        self.box_spring = QCheckBox('Spring')
-        term_layout.addWidget(self.box_spring)
+        # term_layout = QHBoxLayout()
+        # self.box_fall = QCheckBox('Fall')
+        # term_layout.addWidget(self.box_fall)
+        # self.box_winter = QCheckBox('Winter')
+        # term_layout.addWidget(self.box_winter)
+        # self.box_spring = QCheckBox('Spring')
+        # term_layout.addWidget(self.box_spring)
 
         # Course level
-        level_layout = QHBoxLayout()
-        self.box_lower = QCheckBox('Lower Division')
-        level_layout.addWidget(self.box_lower)
-        self.box_upper = QCheckBox('Upper Division')
-        level_layout.addWidget(self.box_upper)
-        self.box_grad = QCheckBox('Graduate')
-        level_layout.addWidget(self.box_grad)
-
-        self.requisites_checkbox = QCheckBox()
+        # level_layout = QHBoxLayout()
+        # self.box_lower = QCheckBox('Lower Division')
+        # level_layout.addWidget(self.box_lower)
+        # self.box_upper = QCheckBox('Upper Division')
+        # level_layout.addWidget(self.box_upper)
+        # self.box_grad = QCheckBox('Graduate')
+        # level_layout.addWidget(self.box_grad)
+        #
+        # self.requisites_checkbox = QCheckBox()
 
         # Maximum hours input
         self.maximum_hours = QSpinBox(self)
@@ -88,9 +88,9 @@ class FilteringWindow(QWidget):
         form_layout = QFormLayout()
         form_layout.addRow(QLabel('Subject Area:'), self.subject_area_checkbox)
         form_layout.addRow(QLabel('Units:'), units_layout)
-        form_layout.addRow(QLabel('Term:'), term_layout)
-        form_layout.addRow(QLabel('Requisites:'), self.requisites_checkbox)
-        form_layout.addRow(QLabel('Course Level:'), level_layout)
+        # form_layout.addRow(QLabel('Term:'), term_layout)
+        # form_layout.addRow(QLabel('Requisites:'), self.requisites_checkbox)
+        # form_layout.addRow(QLabel('Course Level:'), level_layout)
         form_layout.addRow(QLabel('Maximum Weekly Lecture Hours:'), self.maximum_hours)
         layout_main.addLayout(form_layout)
 
@@ -106,14 +106,14 @@ class FilteringWindow(QWidget):
         :return: subject area enum, minimum and maximum units and maximum lecture hours per week
         """
         # Get the values of the widgets and process them
-        fall_checked = self.box_fall.isChecked()
-        winter_checked = self.box_winter.isChecked()
-        spring_checked = self.box_spring.isChecked()
+        # fall_checked = self.box_fall.isChecked()
+        # winter_checked = self.box_winter.isChecked()
+        # spring_checked = self.box_spring.isChecked()
         subject_area_value = SubjectArea(self.subject_area_checkbox.currentText())
-        lower_checked = self.box_lower.isChecked()
-        upper_checked = self.box_upper.isChecked()
-        grad_checked = self.box_grad.isChecked()
-        req_checked = self.requisites_checkbox.isChecked()
+        # lower_checked = self.box_lower.isChecked()
+        # upper_checked = self.box_upper.isChecked()
+        # grad_checked = self.box_grad.isChecked()
+        # req_checked = self.requisites_checkbox.isChecked()
         min_unit_value = self.minimum_val.value()
         max_unit_value = self.maximum_val.value()
         maximum_hours = self.maximum_hours.value()

@@ -9,7 +9,7 @@ import pickle
 # Load dict and get course descriptions
 FILE_NAME = 'course_data.json'
 course_dict = load_dict_from_json(FILE_NAME)
-description_list = [course_dict[course]["Description"] for course in list(course_dict.keys())]
+description_list = [course + '.' + course_dict[course]["Description"] for course in list(course_dict.keys())]
 
 # Create embedder
 embedder = SentenceTransformer('all-MiniLM-L6-v2')

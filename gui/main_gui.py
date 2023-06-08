@@ -103,12 +103,8 @@ class MainWindow(QMainWindow):
         Shows the starting and filtering windows
         :return: None
         """
-        self.hide()
-        if not self.start_window.isVisible():
-            self.start_window.setVisible(True)
-            self.start_window.showFullScreen()
-        # if not self.start_window.filter_window.isVisible():
-        #     self.start_window.filter_window.show()
+        if not self.start_window.filter_window.isVisible():
+            self.start_window.filter_window.show()
 
     def load_main_window(self) -> None:
         """
@@ -129,6 +125,10 @@ class MainWindow(QMainWindow):
 
         self.setVisible(True)
         self.showFullScreen()
+
+        self.calendar_widget.clear()
+        self.calendar_widget.draw_empty_table()
+        self.calendar_widget.courses = []
 
         # Hide start and filter windows
         self._hide_other_windows()
@@ -257,6 +257,7 @@ class MainWindow(QMainWindow):
         self.recommendation_layout.insertWidget(1, self.recommendations_widget) # , alignment=Qt.AlignHCenter)
         self.calendar_widget.clear()
         self.calendar_widget.draw_empty_table()
+        self.calendar_widget.courses = []
 
         self.fill_recommended_classes()
 
@@ -282,8 +283,11 @@ class MainWindow(QMainWindow):
         if text_prompt != '' and text_prompt != 'Enter your prompt here:':
             self.text_filter.generate_scores(text_prompt)
             for score, class_index in self.displayed_class_index:
-                # TODO error need to fix it so that only if class index exists in displayed_class_index
-                self.displayed_class_index[class_index][0] = self.text_filter.scores[class_index]
+
+                # print(class_index, self.displayed_class_index.index([0, class_index]))
+                if [score, class_index] in self.displayed_class_index:
+                    self.displayed_class_index[self.displayed_class_index.index([score, class_index])][0] = self.text_filter.scores[class_index]
+                # self.displayed_class_index[class_index][0] = self.text_filter.scores[class_index]
 
     def fill_recommended_classes(self) -> None:
         """
