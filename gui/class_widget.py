@@ -108,6 +108,26 @@ class ClassBox(QWidget):
                     label.setStyleSheet(f'''border-radius: 5px;
                                                         border: 2px solid black;
                                                         background-color: {color};''')
+                    break
+        elif "MATH" in self.class_name:  # pinkish colors for CS classes
+            while True:
+                self.rgb_color[0] = r = random.randint(200, 255)  # no red component
+                self.rgb_color[1] = g = random.randint(0, 100)  # Green component (100-200 for just a little green
+                # tone)
+                self.rgb_color[2] = b = random.randint(180, 220)  # Blue component (150-255 for medium-light shades)
+
+                # Generate CSS color string
+                color = f"rgb({self.rgb_color[0]}, {self.rgb_color[1]}, {self.rgb_color[2]})"
+
+                # checks the values of the color to make sure there is a difference of at most 100 between them
+                if not any(
+                        abs(r - cr) < 100 and abs(g - cg) < 100 and abs(b - cb) < 100 for cr, cg, cb in
+                        generated_colors):
+                    generated_colors.add((r, g, b))
+                    label.setStyleSheet(f'''border-radius: 5px;
+                                                                       border: 2px solid black;
+                                                                       background-color: {color};''')
+                    break
 
         # Fixes text and geometry of the button (NEEDS FIXING)
         font = label.font()
