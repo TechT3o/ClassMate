@@ -9,10 +9,9 @@ import sys
 import os
 from text_filter import TextFilter
 from PyQt5.QtCore import Qt
-
-
 from constraint_filtering import ConstraintBasedFilter
 from statics import load_dict_from_json
+
 
 class MainWindow(QMainWindow):
     """
@@ -41,13 +40,16 @@ class MainWindow(QMainWindow):
         self.main_layout = QVBoxLayout()
         self.top_layout = QHBoxLayout()
         self.bottom_layout = QHBoxLayout()
+        self.webview_layout = QVBoxLayout()
+        self.recommendation_layout = QVBoxLayout()
 
         # Main page widgets
         self.calendar_widget = CalendarWidget(self)
         self.text_box = QPlainTextEdit(self)
         self.text_display = QPlainTextEdit(self)
 
-        self.prompt_enter_btn = QPushButton('Enter text')
+        self.prompt_enter_btn = QPushButton('Submit')
+        self.prompt_enter_btn.setStatusTip("Click to re-score courses based on prompt")
         self.prompt_enter_btn.clicked.connect(self.input_prompt)
 
         self.webview = QWebEngineView(self)
@@ -60,6 +62,9 @@ class MainWindow(QMainWindow):
         self.text_filter = TextFilter()
         self.constraint_based_filter = ConstraintBasedFilter()
 
+        self.setStatusBar(QStatusBar(self))
+        self.form_window_layout()
+
     def load_courses(self) -> None:
         """
         Loads the courses to be displayed in the course widgets list and assigns the ClassBox widget signals
@@ -69,6 +74,8 @@ class MainWindow(QMainWindow):
         for score, index in self.displayed_class_index[:20]:
             class_widget = ClassBox(self.class_names[index], self.course_dict[self.class_names[index]])
             class_widget.set_score(score)
+            class_widget.btn.setStatusTip("Click to add/remove class from calendar")
+            class_widget.lbl.setStatusTip("Click to see class webpage")
             class_widget.buttonClicked.connect(self.onClassButtonClicked)
             class_widget.classClicked.connect(self.update_webview)
             self.course_widgets.append(class_widget)
@@ -91,6 +98,18 @@ class MainWindow(QMainWindow):
         if self.start_window.filter_window.isVisible():
             self.start_window.filter_window.hide()
 
+    def _show_other_windows(self) -> None:
+        """
+        Shows the starting and filtering windows
+        :return: None
+        """
+        self.hide()
+        if not self.start_window.isVisible():
+            self.start_window.setVisible(True)
+            self.start_window.showFullScreen()
+        # if not self.start_window.filter_window.isVisible():
+        #     self.start_window.filter_window.show()
+
     def load_main_window(self) -> None:
         """
         Gets the results of the filtering window, creates the constraint based filtering
@@ -106,7 +125,13 @@ class MainWindow(QMainWindow):
         self.constraint_filter_courses()
         self.load_courses()
         self.fill_recommended_classes()
-        self.form_window_layout()
+        # self.form_window_layout()
+
+        self.setVisible(True)
+        self.showFullScreen()
+
+        # Hide start and filter windows
+        self._hide_other_windows()
 
     def form_window_layout(self) -> None:
         """
@@ -115,23 +140,36 @@ class MainWindow(QMainWindow):
         """
 
         # Prompt and LLM conversation
-        self.text_box.setGeometry(50, 50, 100, 150)
-        self.text_box.setPlaceholderText("Enter your prompt here:")
+        self.text_box.setGeometry(25, 25, 50, 150)
+        self.text_box.setPlaceholderText("Search for course here:")
+        self.text_box.setStatusTip("Type what kind of course you would like")
 
         self.text_display.setGeometry(50, 50, 100, 150)
-        self.text_display.setPlainText("LLM conversation:\n")
+        self.text_display.setPlainText("Previous search history:\n")
         self.text_display.setReadOnly(True)
         self.text_display.setCenterOnScroll(True)
 
+        llm_layout = QVBoxLayout()
+        llm_layout.addWidget(self.text_display)  # , alignment=Qt.AlignCenter)
+        llm_layout.addWidget(self.text_box)  # , alignment=Qt.AlignCenter)
+        llm_layout.addWidget(self.prompt_enter_btn)  # , alignment=Qt.AlignCenter)
+
         # Bottom layout
         self.bottom_layout.addWidget(self.calendar_widget) # , alignment=Qt.AlignCenter)
-        self.bottom_layout.addWidget(self.text_box) #, alignment=Qt.AlignCenter)
-        self.bottom_layout.addWidget(self.text_display) #, alignment=Qt.AlignCenter)
-        self.bottom_layout.addWidget(self.prompt_enter_btn) #, alignment=Qt.AlignCenter)
+        # self.bottom_layout.addWidget(self.text_box) #, alignment=Qt.AlignCenter)
+        # self.bottom_layout.addWidget(self.text_display) #, alignment=Qt.AlignCenter)
+        # self.bottom_layout.addWidget(self.prompt_enter_btn) #, alignment=Qt.AlignCenter)
+        self.bottom_layout.addLayout(llm_layout)
 
         # Top layout
-        self.top_layout.addWidget(self.recommendations_widget) #, alignment=Qt.AlignCenter)
-        self.top_layout.addWidget(self.webview) #, alignment=Qt.AlignCenter)
+
+        self.recommendation_layout.addWidget(QLabel('Recommendation table scroll to see sorted classes'))
+        self.recommendation_layout.addWidget(self.recommendations_widget)
+        self.top_layout.addLayout(self.recommendation_layout) #, alignment=Qt.AlignCenter)
+
+        self.webview_layout.addWidget(QLabel('Webview, click on a class name to load class webpage'))
+        self.webview_layout.addWidget(self.webview)
+        self.top_layout.addLayout(self.webview_layout) #, alignment=Qt.AlignCenter)
 
         # Main layout
         self.main_layout.addLayout(self.top_layout)
@@ -140,11 +178,11 @@ class MainWindow(QMainWindow):
         widget = QWidget(self)
         widget.setLayout(self.main_layout)
         self.setCentralWidget(widget)
-        self.setVisible(True)
-        self.showFullScreen()
-
-        # Hide start and filter windows
-        self._hide_other_windows()
+        # self.setVisible(True)
+        # self.showFullScreen()
+        #
+        # # Hide start and filter windows
+        # self._hide_other_windows()
 
     def onClassButtonClicked(self, class_box_widget: ClassBox) -> None:
         """
@@ -173,25 +211,32 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
 
         # Create a "File" menu
-        file_menu = menubar.addMenu("&Quit ClassMate")
+        quit_menu = menubar.addMenu("&Quit")
+        back_menu = menubar.addMenu("&Back")
+        help_menu = menubar.addMenu("&Help")
 
         # Create a "Quit" action
-        quit_action = QAction("Quit", self)
+        quit_action = QAction("Quit Classmate", self)
         quit_action.setShortcut(QKeySequence.Quit)
+        quit_action.setStatusTip("Click to quit Classmate.")
         quit_action.triggered.connect(QApplication.quit)
 
-        # Help text
-        """
-        In the upper left corner, a display of the classes that best fit you depending on the filters used or your input in the text prompt. For each class, the + button allows you to add the class in the plan in the calendar in the bottom right corner. Similarly, once the class is added, the - button allows you to remove it. Clicking on the class name opens the class details in the top right corner.
+        # Create a "Back" action
+        back_action = QAction("Go back to filtering", self)
+        # back_action.setShortcut('Ctrl')
+        back_action.triggered.connect(self._show_other_windows)
+        back_action.setStatusTip("Click to go back to filtering window.")
 
-        In the bottom left corner, the calendar with the added classes is displayed.
-
-        In the bottom right corner, a text prompt allows you to input your preferences as a text input and our AI agent will find the classes that best suit you based on your preferences. 
-        
-        """
+        # Create a "Quit" action
+        help_action = QAction("Help", self)
+        # help_action.setShortcut(QKeySequence.Quit)
+        help_action.triggered.connect(self.help_dialog)
+        help_action.setStatusTip("Click to see Classmate tutorial.")
 
         # Add the "Quit" action to the "File" menu
-        file_menu.addAction(quit_action)
+        quit_menu.addAction(quit_action)
+        back_menu.addAction(back_action)
+        help_menu.addAction(help_action)
 
     def input_prompt(self) -> None:
         """
@@ -199,8 +244,8 @@ class MainWindow(QMainWindow):
         and calls the functions that update the scores of the classes and redraw the recommended class widget
         :return: None
         """
-        self.text_display.appendPlainText('You said: \n' + self.text_box.toPlainText())
-        self.text_display.appendPlainText('AI replied: \n' + '' + '\n')
+        self.text_display.appendPlainText('You searched for: \n' + self.text_box.toPlainText())
+        # self.text_display.appendPlainText('AI replied: \n' + '' + '\n')
         self.text_display.ensureCursorVisible()
 
         self.text_filter_courses(self.text_box.toPlainText())
@@ -209,7 +254,10 @@ class MainWindow(QMainWindow):
         self.top_layout.removeWidget(self.recommendations_widget)
         self.recommendations_widget.deleteLater()
         self.recommendations_widget = QTableWidget(3, 50)
-        self.top_layout.insertWidget(0, self.recommendations_widget)# , alignment=Qt.AlignHCenter)
+        self.recommendation_layout.insertWidget(1, self.recommendations_widget) # , alignment=Qt.AlignHCenter)
+        self.calendar_widget.clear()
+        self.calendar_widget.draw_empty_table()
+
         self.fill_recommended_classes()
 
     def constraint_filter_courses(self) -> None:
@@ -217,6 +265,7 @@ class MainWindow(QMainWindow):
         Filters the class indexes based on the constraints given in the filtering window
         :return: None
         """
+        self.displayed_class_index = []
         for index, class_name in enumerate(self.class_names):
             class_info = self.course_dict[class_name]
             if self.constraint_based_filter.filter_course(class_info):
@@ -233,6 +282,7 @@ class MainWindow(QMainWindow):
         if text_prompt != '' and text_prompt != 'Enter your prompt here:':
             self.text_filter.generate_scores(text_prompt)
             for score, class_index in self.displayed_class_index:
+                # TODO error need to fix it so that only if class index exists in displayed_class_index
                 self.displayed_class_index[class_index][0] = self.text_filter.scores[class_index]
 
     def fill_recommended_classes(self) -> None:
@@ -263,6 +313,19 @@ class MainWindow(QMainWindow):
         """
         # Load a website
         self.webview.setUrl(QUrl(class_box_widget.class_details['href']))
+
+    def help_dialog(self, s):
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle("Tutorial")
+        text = """
+        In the upper left corner, a display of the classes that best fit you depending on the filters used or your input in the text prompt. For each class, the + button allows you to add the class in the plan in the calendar in the bottom right corner. Similarly, once the class is added, the - button allows you to remove it. Clicking on the class name opens the class details in the top right corner.
+
+        In the bottom left corner, the calendar with the added classes is displayed.
+
+        In the bottom right corner, a text prompt allows you to input your preferences as a text input and our AI agent will find the classes that best suit you based on your preferences. 
+        """
+        dlg.setText(text)
+        dlg.exec()
 
 
 if __name__ == "__main__":
