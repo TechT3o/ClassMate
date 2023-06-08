@@ -1,3 +1,6 @@
+import math
+import random
+
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QMainWindow, QVBoxLayout, QSizePolicy, QApplication
 from PyQt5.QtCore import Qt
@@ -7,6 +10,7 @@ class Color(QWidget):
     """
     class that changes the palette color of a widget
     """
+
     def __init__(self, color):
         super(Color, self).__init__()
         self.setAutoFillBackground(True)
@@ -47,7 +51,15 @@ class ClassBox(QWidget):
         layout.addWidget(self.lbl)
         self.setLayout(layout)
 
-    def name_label(self) -> QPushButton:
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtCore import Qt
+    import random
+
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtCore import Qt
+    import random
+
+    def name_label(self):
         """
         Creates label (actually button) that has the name of the course
         :return: parent button that has course name
@@ -55,24 +67,58 @@ class ClassBox(QWidget):
         label = QPushButton(self.class_name, self)
         label.setCheckable(False)
         label.setAutoDefault(False)
+        label
 
-        # label = QtWidgets.QLabel(self.class_name)
-        # sets style of button
-        label.setStyleSheet(f'''border-radius : 5px;
-                                border: 2px solid black;
-                                background-color:rgb({self.rgb_color[0]},{self.rgb_color[1]},{self.rgb_color[2]})
-                                ''')
+        generated_colors = set()  # To store the generated colors
 
-        # fixes text and geometry of button (NEEDS FIXING)
+        if "EC" in self.class_name:
+            while True:
+                self.rgb_color[0] = r = random.randint(50, 125)  # no red component
+                self.rgb_color[1] = g = random.randint(100, 200)  # Green component (100-200 for just a little green
+                # tone)
+                self.rgb_color[2] = b = random.randint(150, 255)  # Blue component (150-255 for medium-light shades)
+
+                # Generate CSS color string
+                color = f"rgb({self.rgb_color[0]}, {self.rgb_color[1]}, {self.rgb_color[2]})"
+
+                # Check if the generated color is significantly different from any previously generated color
+                # still need to experiment with values
+                # cr, cg, cb are the previously generated colors
+                if not any(color_distance((r, g, b), (cr, cg, cb)) < 100 for cr, cg, cb in generated_colors):
+                    generated_colors.add((r, g, b))
+                    label.setStyleSheet(f'''border-radius: 5px;
+                                             border: 2px solid black;
+                                             background-color: {color};''')
+                    break
+        elif "COM" in self.class_name:  # pinkish colors for CS classes
+            while True:
+                self.rgb_color[0] = r = random.randint(200, 255)  # no red component
+                self.rgb_color[1] = g = random.randint(100, 150)  # Green component (100-200 for just a little green
+                # tone)
+                self.rgb_color[2] = b = random.randint(180, 220)  # Blue component (150-255 for medium-light shades)
+
+                # Generate CSS color string
+                color = f"rgb({self.rgb_color[0]}, {self.rgb_color[1]}, {self.rgb_color[2]})"
+
+                # checks the values of the color to make sure there is a difference of at most 100 between them
+                if not any(
+                        abs(r - cr) < 100 and abs(g - cg) < 100 and abs(b - cb) < 100 for cr, cg, cb in
+                        generated_colors):
+                    generated_colors.add((r, g, b))
+                    label.setStyleSheet(f'''border-radius: 5px;
+                                                        border: 2px solid black;
+                                                        background-color: {color};''')
+
+        # Fixes text and geometry of the button (NEEDS FIXING)
         font = label.font()
-        font.setPointSize(5)
+        font.setPointSize(6)  # was 5
         label.setGeometry(0, 0, 145, 80)
-        # label.setFixedSize(170, 80)
         label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         label.setMinimumSize(80, 80)
-        label.setMaximumSize(170, 80)
+        label.setMaximumSize(250, 80) # was 170
         label.setFont(font)
-        # label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        #label.setStyleSheet("font-weight: bold; ")  # This makes the words bold but removes the color from the
+        # background of the label except the score portion. Might be a nice potential styling option
 
         return label
 
@@ -114,8 +160,8 @@ class ClassBox(QWidget):
         label.resize(50, 20)
         label.setFont(font)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right()//4,
-                                                                            self.lbl.geometry().bottom()//2
+        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right() // 4,
+                                                                            self.lbl.geometry().bottom() // 2
                                                                             - label.geometry().bottom())
         label.move(percentage_lbl_pos_x)
         label.setVisible(self.ai_toggle)
@@ -139,7 +185,7 @@ class ClassBox(QWidget):
             self.btn.setIcon(QtGui.QIcon('plus-circle.png'))
         else:
             self.btn.setIcon(QtGui.QIcon('minus-circle.png'))
-    
+
     def set_score(self, score: int) -> None:
         """
         Sets new score to the label of the widget
@@ -163,11 +209,23 @@ class ClassBox(QWidget):
 
     @property
     def color(self):
-        return self.rgb_color
+        return self.rgb_color  # rgb_color
 
     @property
     def class_name(self):
         return self.course_name
+
+
+def color_distance(color1, color2):
+    """
+    Calculates the Euclidean distance between two RGB colors.
+    :param color1: First RGB color (r, g, b)
+    :param color2: Second RGB color (r, g, b)
+    :return: Euclidean distance between the two colors
+    """
+    r1, g1, b1 = color1
+    r2, g2, b2 = color2
+    return math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2)
 
 
 if __name__ == "__main__":

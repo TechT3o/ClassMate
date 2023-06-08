@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QSpinBox, QWidget, QVBoxLayout, QHBoxLayout,\
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QLabel, QPushButton, QSpinBox, QWidget, QVBoxLayout, QHBoxLayout, \
     QFormLayout, QCheckBox, QComboBox, QApplication
 from PyQt5.QtCore import Qt
 from enums import SubjectArea
@@ -9,26 +10,28 @@ class FilteringWindow(QWidget):
     """
     Filtering page window, includes filtering constraints and submit button
     """
+
     def __init__(self):
         super(FilteringWindow, self).__init__()
 
         self.setWindowTitle("Filtering Page")
-        self.setStyleSheet("background-color: darkcyan;")
+        self.setStyleSheet("background-color: azure;")  # maybe white
 
         layout_main = QVBoxLayout()
-
         # Welcome label
         welcome_text = QLabel('Welcome to ClassMate')
-        font = welcome_text.font()
-        font.setPointSize(30)
-        welcome_text.setFont(font)
+        # font = welcome_text.font()
+        welcome_text.setFont(QFont('Bodoni MT', 35))
+        # font.setPointSize(30)
+        # welcome_text.setFont(font)
         welcome_text.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
         # Short instruction label
         description_text = QLabel('Select filtering options or press submit to see all options')
-        font = description_text.font()
-        font.setPointSize(15)
-        description_text.setFont(font)
+        # font = description_text.font()
+        # font.setPointSize(15)
+        #  description_text.setFont(font)
+        description_text.setFont(QFont('Bodoni MT', 20))
         description_text.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
         layout_main.addWidget(welcome_text)
@@ -36,6 +39,7 @@ class FilteringWindow(QWidget):
 
         # subject area dropdown
         self.subject_area_checkbox = QComboBox(self)
+        self.subject_area_checkbox.setStyleSheet("background-color: white;")
         self.subject_area_checkbox.addItems(['', "Electrical and Computer Engineering", "Computer Science",
                                              "Mathematics"])
 
@@ -43,6 +47,7 @@ class FilteringWindow(QWidget):
         units_layout = QHBoxLayout()
         unit_range = (0, 4)
         self.minimum_val = QSpinBox(self)
+        self.minimum_val.setStyleSheet("background-color: white;")
         self.minimum_val.setSingleStep(1)
         self.minimum_val.setMinimum(unit_range[0])
         self.minimum_val.setMaximum(unit_range[1])
@@ -51,6 +56,7 @@ class FilteringWindow(QWidget):
         dash.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         units_layout.addWidget(dash)
         self.maximum_val = QSpinBox(self)
+        self.maximum_val.setStyleSheet("background-color: white;")
         self.maximum_val.setSingleStep(1)
         self.maximum_val.setValue(4)
         self.maximum_val.setMinimum(unit_range[0])
@@ -79,6 +85,7 @@ class FilteringWindow(QWidget):
 
         # Maximum hours input
         self.maximum_hours = QSpinBox(self)
+        self.maximum_hours.setStyleSheet("background-color: white;")
         self.maximum_hours.setSingleStep(1)
         self.maximum_hours.setMinimum(0)
         self.maximum_hours.setMaximum(6)
@@ -96,6 +103,7 @@ class FilteringWindow(QWidget):
 
         # Link submit button to submit method
         self.submit_button = QPushButton("Submit")
+        self.submit_button.setStyleSheet("background-color: whitesmoke;") #gainsboro
         layout_main.addWidget(self.submit_button)
 
         self.setLayout(layout_main)
