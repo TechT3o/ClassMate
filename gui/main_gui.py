@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
         self.text_filter.extract_keywords(text_prompt)
 
         # Text Filtering if prompt inserted
-        if text_prompt != '' and text_prompt != 'Enter your prompt here:':
+        if text_prompt != '' and text_prompt != 'Describe your preferences:':
             for score, class_index in self.displayed_class_index:
                 score = self.text_filter.rank_classes(self.course_dict[self.class_names[class_index]])
                 self.displayed_class_index[class_index][0] = score
