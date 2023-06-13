@@ -1,15 +1,16 @@
+import math
+import random
+
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QMainWindow, QVBoxLayout, QSizePolicy, QApplication
 from PyQt5.QtCore import Qt
-import random as rng
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
 
 class Color(QWidget):
     """
     class that changes the palette color of a widget
     """
+
     def __init__(self, color):
         super(Color, self).__init__()
         self.setAutoFillBackground(True)
@@ -32,12 +33,12 @@ class ClassBox(QWidget):
         self.setParent(parent)
         self.class_details = class_details
         self.course_name = class_name
+
+        self.rgb_color = self.class_details['Color']
+
         self.plus = True
         self.ai_toggle = True
         self.score = 0
-
-        # Generates random background color
-        self.rgb_color = (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255))
 
         # Creates widget layout
         # self.setFixedSize(200, 100)
@@ -50,9 +51,15 @@ class ClassBox(QWidget):
         layout.addWidget(self.lbl)
         self.setLayout(layout)
 
-        self.generate_random_schedule()
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtCore import Qt
+    import random
 
-    def name_label(self) -> QPushButton:
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtCore import Qt
+    import random
+
+    def name_label(self):
         """
         Creates label (actually button) that has the name of the course
         :return: parent button that has course name
@@ -61,23 +68,56 @@ class ClassBox(QWidget):
         label.setCheckable(False)
         label.setAutoDefault(False)
 
-        # label = QtWidgets.QLabel(self.class_name)
-        # sets style of button
-        label.setStyleSheet(f'''border-radius : 5px;
-                                border: 2px solid black;
-                                background-color:rgb({self.rgb_color[0]},{self.rgb_color[1]},{self.rgb_color[2]})
-                                ''')
+        generated_colors = set()  # To store the generated colors
 
-        # fixes text and geometry of button (NEEDS FIXING)
+        if "EC" in self.class_name:
+            while True:
+                self.rgb_color[0] = r = random.randint(50, 125)  # no red component
+                self.rgb_color[1] = g = random.randint(100, 200)  # Green component (100-200 for just a little green
+                # tone)
+                self.rgb_color[2] = b = random.randint(150, 255)  # Blue component (150-255 for medium-light shades)
+
+                # Generate CSS color string
+                color = f"rgb({self.rgb_color[0]}, {self.rgb_color[1]}, {self.rgb_color[2]})"
+
+                # Check if the generated color is significantly different from any previously generated color
+                # still need to experiment with values
+                # cr, cg, cb are the previously generated colors
+                if not any(color_distance((r, g, b), (cr, cg, cb)) < 100 for cr, cg, cb in generated_colors):
+                    generated_colors.add((r, g, b))
+                    label.setStyleSheet(f'''border-radius: 5px;
+                                             border: 2px solid black;
+                                             background-color: {color};''')
+                    break
+        elif "COM" in self.class_name:  # pinkish colors for CS classes
+            while True:
+                self.rgb_color[0] = r = random.randint(200, 255)  # no red component
+                self.rgb_color[1] = g = random.randint(100, 150)  # Green component (100-200 for just a little green
+                # tone)
+                self.rgb_color[2] = b = random.randint(180, 220)  # Blue component (150-255 for medium-light shades)
+
+                # Generate CSS color string
+                color = f"rgb({self.rgb_color[0]}, {self.rgb_color[1]}, {self.rgb_color[2]})"
+
+                # checks the values of the color to make sure there is a difference of at most 100 between them
+                if not any(
+                        abs(r - cr) < 100 and abs(g - cg) < 100 and abs(b - cb) < 100 for cr, cg, cb in
+                        generated_colors):
+                    generated_colors.add((r, g, b))
+                    label.setStyleSheet(f'''border-radius: 5px;
+                                                        border: 2px solid black;
+                                                        background-color: {color};''')
+
+        # Fixes text and geometry of the button (NEEDS FIXING)
         font = label.font()
-        font.setPointSize(5)
+        font.setPointSize(6)  # was 5
         label.setGeometry(0, 0, 145, 80)
-        # label.setFixedSize(170, 80)
         label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         label.setMinimumSize(80, 80)
-        label.setMaximumSize(170, 80)
+        label.setMaximumSize(170, 80) # was 170
         label.setFont(font)
-        # label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        label.setStyleSheet("font-weight: bold; ")  # This makes the words bold but removes the color from the
+        # background of the label except the score portion. Might be a nice potential styling option
 
         return label
 
@@ -109,41 +149,23 @@ class ClassBox(QWidget):
     def match_percent(self) -> QLabel:
         """
         Label that displays how closely a course option matches the user
-        :param percentage: match percentage
-        :return: None
+        :return: label containing score
         """
-        label = QLabel(f'score: {self.score}', self.lbl)
+        label = QLabel(f'Score: {int(self.score*100)}%', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
-                                        border: 1px solid black''')
+                                        border: 1px solid black; font-weight: bold;''')
         font = label.font()
         font.setPointSize(5)
         label.resize(50, 20)
         label.setFont(font)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right()//4, self.lbl.geometry().bottom()//2 - label.geometry().bottom())
+        percentage_lbl_pos_x = self.lbl.geometry().center() + QtCore.QPoint(-label.geometry().right() // 4,
+                                                                            self.lbl.geometry().bottom() // 2
+                                                                            - label.geometry().bottom())
         label.move(percentage_lbl_pos_x)
         label.setVisible(self.ai_toggle)
 
         return label
-
-    def generate_random_schedule(self) -> None:
-        """
-        Generates a random time schedule for the class
-        :return: None
-        """
-
-        # possible lecture days
-        days = ["MW", "TT", "WF", "Mo", "Tu", "We", "Th", "Fr"]
-
-        # selects random, hours, duration and days
-        hours = list(range(1, 8))
-        duration = rng.randint(1, 3)
-        start_hour = rng.choice(hours)
-        day = rng.choice(days)
-        finish_hour = start_hour + duration
-
-        # add it in class details
-        self.class_details['Schedule'] = (day, start_hour, finish_hour)
 
     def onButtonClicked(self) -> None:
         """
@@ -162,10 +184,15 @@ class ClassBox(QWidget):
             self.btn.setIcon(QtGui.QIcon('plus-circle.png'))
         else:
             self.btn.setIcon(QtGui.QIcon('minus-circle.png'))
-    
-    def set_percentage(self, score: int):
+
+    def set_score(self, score: int) -> None:
+        """
+        Sets new score to the label of the widget
+        :param score: new score
+        :return: None
+        """
         self.score = score
-        self.match_lbl.setText(f'score: {self.score}')
+        self.match_lbl.setText(f'Score: {int(self.score*100)}%')
 
     def onLabelClicked(self) -> None:
         """
@@ -181,15 +208,27 @@ class ClassBox(QWidget):
 
     @property
     def color(self):
-        return self.rgb_color
+        return self.rgb_color  # rgb_color
 
     @property
     def class_name(self):
         return self.course_name
 
 
+def color_distance(color1, color2):
+    """
+    Calculates the Euclidean distance between two RGB colors.
+    :param color1: First RGB color (r, g, b)
+    :param color2: Second RGB color (r, g, b)
+    :return: Euclidean distance between the two colors
+    """
+    r1, g1, b1 = color1
+    r2, g2, b2 = color2
+    return math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2)
+
+
 if __name__ == "__main__":
     app = QApplication([])
-    volume = ClassBox('peaki o roubis o koumpis o roumpokompologis', {})
+    volume = ClassBox('GG', {})
     volume.show()
     app.exec_()

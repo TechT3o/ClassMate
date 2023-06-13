@@ -1,3 +1,8 @@
+"""
+By running this script the class details for all the electrical and computer engineering course
+ are scrapped from the web
+"""
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from time import sleep
@@ -57,8 +62,6 @@ class CourseScrapper:
             self.driver.execute_script("arguments[0].click();", next_button)
             sleep(6)
             self._find_class_and_link()
-        print(len(self.course_dict))
-        print(self.course_dict)
 
     def _extract_course_data(self) -> Tuple[str, str, str, str, str]:
         """
@@ -84,7 +87,6 @@ class CourseScrapper:
         :return: None
         """
         course_url = self.course_dict[course]['href']
-        print(course_url)
         self.driver.get(course_url)
         sleep(4)
 
