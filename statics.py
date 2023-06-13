@@ -4,6 +4,7 @@ import os
 from typing import List, Tuple
 from torch import Tensor
 
+
 def save_dict_to_json(data: dict, filename: str):
     """
     Save dictionary in json file
@@ -18,7 +19,7 @@ def save_dict_to_json(data: dict, filename: str):
 def load_dict_from_json(filename: str) -> dict:
     """
     Loads dictionary from .json file
-    :param filename: filename to laod dict from
+    :param filename: filename to load dict from
     :return: dictionary saved in .json
     """
     with open(filename) as json_file:

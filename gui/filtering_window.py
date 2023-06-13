@@ -20,17 +20,11 @@ class FilteringWindow(QWidget):
         layout_main = QVBoxLayout()
         # Welcome label
         welcome_text = QLabel('Welcome to ClassMate')
-        # font = welcome_text.font()
         welcome_text.setFont(QFont('Bodoni MT', 35))
-        # font.setPointSize(30)
-        # welcome_text.setFont(font)
         welcome_text.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
         # Short instruction label
         description_text = QLabel('Select filtering options or press submit to see all options')
-        # font = description_text.font()
-        # font.setPointSize(15)
-        #  description_text.setFont(font)
         description_text.setFont(QFont('Bodoni MT', 20))
         description_text.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
@@ -40,8 +34,7 @@ class FilteringWindow(QWidget):
         # subject area dropdown
         self.subject_area_checkbox = QComboBox(self)
         self.subject_area_checkbox.setStyleSheet("background-color: white;")
-        self.subject_area_checkbox.addItems(['', "Electrical and Computer Engineering", "Computer Science",
-                                             "Mathematics"])
+        self.subject_area_checkbox.addItems(['', "Electrical and Computer Engineering"])
 
         # Units range
         units_layout = QHBoxLayout()

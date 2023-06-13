@@ -178,11 +178,6 @@ class MainWindow(QMainWindow):
         widget = QWidget(self)
         widget.setLayout(self.main_layout)
         self.setCentralWidget(widget)
-        # self.setVisible(True)
-        # self.showFullScreen()
-        #
-        # # Hide start and filter windows
-        # self._hide_other_windows()
 
     def onClassButtonClicked(self, class_box_widget: ClassBox) -> None:
         """
@@ -284,10 +279,9 @@ class MainWindow(QMainWindow):
             self.text_filter.generate_scores(text_prompt)
             for score, class_index in self.displayed_class_index:
 
-                # print(class_index, self.displayed_class_index.index([0, class_index]))
                 if [score, class_index] in self.displayed_class_index:
-                    self.displayed_class_index[self.displayed_class_index.index([score, class_index])][0] = self.text_filter.scores[class_index]
-                # self.displayed_class_index[class_index][0] = self.text_filter.scores[class_index]
+                    self.displayed_class_index[self.displayed_class_index.index([score, class_index])][0]\
+                        = self.text_filter.scores[class_index]
 
     def fill_recommended_classes(self) -> None:
         """
@@ -322,11 +316,15 @@ class MainWindow(QMainWindow):
         dlg = QMessageBox(self)
         dlg.setWindowTitle("Tutorial")
         text = """
-        In the upper left corner, a display of the classes that best fit you depending on the filters used or your input in the text prompt. For each class, the + button allows you to add the class in the plan in the calendar in the bottom right corner. Similarly, once the class is added, the - button allows you to remove it. Clicking on the class name opens the class details in the top right corner.
+        In the upper left corner, a display of the classes that best fit you depending on the filters used or your
+        input in the text prompt. For each class, the + button allows you to add the class in the plan in the calendar
+        in the bottom right corner. Similarly, once the class is added, the - button allows you to remove it.
+        Clicking on the class name opens the class details in the top right corner.
 
         In the bottom left corner, the calendar with the added classes is displayed.
 
-        In the bottom right corner, a text prompt allows you to input your preferences as a text input and our AI agent will find the classes that best suit you based on your preferences. 
+        In the bottom right corner, a text prompt allows you to input your preferences as a text input and our AI agent
+        will find the classes that best suit you based on your preferences. 
         """
         dlg.setText(text)
         dlg.exec()

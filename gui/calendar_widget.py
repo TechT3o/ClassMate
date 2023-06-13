@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 import sys
 import os
+
 sys.path.append(os.pardir)
 from statics import interpret_days
 from PyQt5.QtGui import QColor
@@ -11,6 +12,7 @@ class CalendarWidget(QTableWidget):
     """
     Calendar widget that can display the course schedule information in calendar view
     """
+
     def __init__(self, parent: QMainWindow = None):
         super().__init__(10, 5)
 

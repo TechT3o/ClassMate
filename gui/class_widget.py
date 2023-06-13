@@ -67,7 +67,6 @@ class ClassBox(QWidget):
         label = QPushButton(self.class_name, self)
         label.setCheckable(False)
         label.setAutoDefault(False)
-        label
 
         generated_colors = set()  # To store the generated colors
 
@@ -115,9 +114,9 @@ class ClassBox(QWidget):
         label.setGeometry(0, 0, 145, 80)
         label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         label.setMinimumSize(80, 80)
-        label.setMaximumSize(250, 80) # was 170
+        label.setMaximumSize(170, 80) # was 170
         label.setFont(font)
-        #label.setStyleSheet("font-weight: bold; ")  # This makes the words bold but removes the color from the
+        label.setStyleSheet("font-weight: bold; ")  # This makes the words bold but removes the color from the
         # background of the label except the score portion. Might be a nice potential styling option
 
         return label
@@ -152,9 +151,9 @@ class ClassBox(QWidget):
         Label that displays how closely a course option matches the user
         :return: label containing score
         """
-        label = QLabel(f'score: {self.score:.{3}f}', self.lbl)
+        label = QLabel(f'Score: {int(self.score*100)}%', self.lbl)
         label.setStyleSheet('''border-radius : 1px;
-                                        border: 1px solid black''')
+                                        border: 1px solid black; font-weight: bold;''')
         font = label.font()
         font.setPointSize(5)
         label.resize(50, 20)
@@ -193,7 +192,7 @@ class ClassBox(QWidget):
         :return: None
         """
         self.score = score
-        self.match_lbl.setText(f'score: {self.score:.{3}f}')
+        self.match_lbl.setText(f'Score: {int(self.score*100)}%')
 
     def onLabelClicked(self) -> None:
         """

@@ -22,8 +22,6 @@ class StartWindow(QWidget):
 
         layout_v = QVBoxLayout()
         lbl = QLabel('Welcome to Classmate')
-        #font = lbl.font()
-        #font.setPointSize(30)
         lbl.setFont(QFont('Bodoni MT', 55))
         lbl.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
 
@@ -39,7 +37,6 @@ class StartWindow(QWidget):
         pixmap_resized = image.scaled(512, 512, Qt.KeepAspectRatio)
         pic.setPixmap(pixmap_resized)
 
-        # pic.setScaledContents(True)
         layout.addLayout(layout_v)
         layout.addWidget(pic, alignment=Qt.AlignHCenter)
 
