@@ -1,4 +1,4 @@
-from filtering_window import FilteringWindow
+from gui.filtering_window import FilteringWindow
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QFrame
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QFont

@@ -1,6 +1,5 @@
 import json
 import pickle
-import os
 from typing import List, Tuple
 from torch import Tensor
 
@@ -32,7 +31,7 @@ def load_pickle_embeddings() -> Tuple[List[str], Tensor]:
     Loads pickled course description embeddings from the embeddings.pkl file
     :return:
     """
-    with open(os.path.join(os.pardir, 'embeddings.pkl'), "rb") as fIn:
+    with open('embeddings.pkl', "rb") as fIn:
         stored_data = pickle.load(fIn)
         stored_sentences = stored_data['sentences']
         stored_embeddings = stored_data['embeddings']
