@@ -1,14 +1,13 @@
-from class_widget import ClassBox
-from calendar_widget import CalendarWidget
-from start_window import StartWindow
-from PyQt5.QtWidgets import *
+from gui import ClassBox
+from gui import CalendarWidget
+from gui import StartWindow
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QMainWindow, QPushButton, QTableWidget, QLabel, QPlainTextEdit,\
+    QStatusBar, QWidget, QAction, QApplication, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 import sys
-import os
 from text_filter import TextFilter
-from PyQt5.QtCore import Qt
 from constraint_filtering import ConstraintBasedFilter
 from statics import load_dict_from_json
 
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow):
         Loads class details from the enriched_course_data.json generated from the web scrapping and enrichment scripts
         :return: None
         """
-        self.course_dict = load_dict_from_json(os.path.join(os.pardir, "enriched_course_data.json"))
+        self.course_dict = load_dict_from_json("enriched_course_data.json")
         self.class_names = list(self.course_dict.keys())
 
     def _hide_other_windows(self) -> None:
